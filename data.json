@@ -1,12 +1,11 @@
 [
     {
         "location1":"Home",
-"link":"https://www.indeed.com/"}
+"link":"https://www.indeed.com/"},
 
-{
-    "location1":"Work",
+{    "location1":"Work",
 "link":"https://www.coursera.org/articles/full-stack-developer?msockid=327abcb3c9b968cf2f07a97fc8e76960"
-}
+},
 
 {"location1": "Play",
 "link": "https://sfbay.craigslist.org/"}

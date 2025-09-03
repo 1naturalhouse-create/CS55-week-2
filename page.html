@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>CSS55.13 Week 2</title>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.minjs"></script>
+    </head>
+    <body>
+        <div id="mysteps"></div>
+        <script data-type ="module" data-presets="react" type="text/babel">
+           "use strict"; 
+           import React from 'http://cdn.jsdelivr.net/npm/react-dom@19.1.1/client/+esn';
+
+            import { createRoot} from 'http://cdn.jsdelivr.net/npm/react-dom@19.1.1/+esn';
+             function ProjectList(props){
+                return <div>
+                    <ol>
+                        {
+                        props.list.map(
+                            (item,index) => (
+                            <li key={index}>
+                                <a href={item.link}>
+                                {item.location1}
+                                </a>    
+                            )
+                        )
+                        }
+                    </ol>
+                        </div>
+             }
+             $.getJSON(
+                "x",
+                function(jsonFromJquery){
+                    console.log(jsonFromJquery);
+                    const myElement = document.getElementById('mysteps');
+                    const myRoot = createRoot (myElement);
+                    myRoot.render(
+                        <ProjectList list={jsonFromJquery}/>
+                    );
+                }
+             )
+       </script>
+    </body>
+</html> 
