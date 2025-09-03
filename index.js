@@ -11,30 +11,35 @@ const fs = require('fs').promises;
 // special variable __dirname has absolute path of where node code is running
 // if fs.readFile() successful, it returns data 
 // use then() method to handle success - contents parameter contains HTML file data
+ HEAD
 const requestListener = function (myrequest, myresponse) {
   // output request url
   console.log( myrequest.url );
 
   if ( myrequest.url === "/") {
+
     // check request url, if root, return html file
     fs.readFile(__dirname + "/page.html")
       .then(contents => {
         // set http response header entry
+HEAD
         myresponse.setHeader("Content-Type", "text/html; charset=UTF-8");
         // return 200 OK http status code
         myresponse.writeHead(200);
         // send back file contents + close response
         myresponse.end(contents);
+
       });
   } else {
     // if request url not root, return json file
     fs.readFile(__dirname + "/data.json")
       .then(contents => {
-        // set http response header entry
+        // set http response header entry HEAD
         myresponse.setHeader("Content-Type", "application/json; charset=UTF-8");
         // return 200 OK http status code
         myresponse.writeHead(200);
         myresponse.end(contents);
+
       });
 
   }
