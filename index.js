@@ -1,81 +1,64 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<!-- need meta viewport tag to allow for css media queries on mobile -->
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>CS55.13 Fall 2025 Week 2: React Import External JSON</title>
-	<!-- local css -->
-	<style>
-		ol {
-			margin: 0;
-			padding: 0;
-			list-style-type: none;
-		}
+// CS55.13 F25 Week02 Instructor Live
 
-		li {
-			display: inline-block;
-      padding: 20px;
-		}
-	</style>
-  <!-- load jquery to use for external json loading -->
-	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <!-- load babel transpiler to convert React's JSX markup to pure JavaScript
-       Note: we only need babel loaded in the browser if we are not using a build system 
-       where babel would save pure JS files to be loaded by the browser instead -->
-	<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-</head>
-<body>
-	<!-- create an element that can be the root element for your react application -->
-	<div id="myApp"></div>
+// load the core node http module
+const http = require("http");
 
-  <!-- load our custom script with react component -->
-  <script type="text/babel" data-type="module" data-presets="react">
-  "use strict";
+// load the core node filesystem (fs) module, using js promises instead of callbacks
+// a promise represents eventual completion of asynch operation and its result
+const fs = require('fs').promises;
 
-  // load react as module
-  import React from 'https://cdn.jsdelivr.net/npm/react@19.1.1/+esm';
-  // load createRoot method from ReactDOM/client
-  import { createRoot } from 'https://cdn.jsdelivr.net/npm/react-dom@19.1.1/client/+esm';
+// create a function to respond to http requests
+// special variable __dirname has absolute path of where node code is running
+// if fs.readFile() successful, it returns data 
+// use then() method to handle success - contents parameter contains HTML file data
+const requestListener = function (req, res) {
+  // output request url
+  console.log(req.url);
 
-  // define a react page component (some JSX that will get react to make html elements
-  // in the view (html output) based on the data it receives from the model (json)
-    function ProjectList(props) {
-      // return some output for the component using JSX
-      return <div>
-          <ol>
-            {
-              // use map() to loop thru array passed in props.list, creating new element for each array value
-              props.list.map( 
-                // copy current array value into item and pass to arrow function
-                (item,index) => (
-                  <li key={index}>
-                    <a href={item.link}>
-                      {item.firstname}
-                    </a>
-                  </li>
-                )
-              )
-            }
-          </ol>
-        </div>;
-    }
+  if (req.url === "/") {
+    // check request url, if root, return html file
+    fs.readFile(__dirname + "/page.html")
+      .then(contents => {
+        // set http response header entry
+        res.setHeader("Content-Type", "text/html; charset=UTF-8");
+        // return 200 OK http status code
+        res.writeHead(200);
+        // send back file contents + close response
+        res.end(contents);
+      });
+  } else {
+    // if request url not root, return json file
+    fs.readFile(__dirname + "/data.json")
+      .then(contents => {
+        // set http response header entry
+        res.setHeader("Content-Type", "application/json; charset=UTF-8");
+        // return 200 OK http status code
+        res.writeHead(200);
+        res.end(contents);
+      });
 
-  // use jQuery to load JSON
-  $.getJSON("anything", function(jsonFromJquery) {
-    console.log(jsonFromJquery);
-    // after JSON loaded
-    // find html element
-    const myElement = document.getElementById('myApp');
-    // reactDOM createRoot() to identify root HTML element for app
-    const myRoot = createRoot(myElement);
-    // then call react render() to output component into existing element
-    // render() takes 2 arguments: (1) JSX component, (2) the html element to render into
-    myRoot.render(
-      <ProjectList list={jsonFromJquery} />
-    );
   }
-  );
-  </script>
-</body>
 
-</html>
+};
+
+// create an http server instance
+const server = http.createServer(requestListener);
+
+// define the TCP port and IP address to tell our http server to listen to
+const host = "127.0.0.1"; // repl.it is going to override this from localhost to your workspace webview hostname URL
+const port = "8080"; // repl.it is going to override this to use port 443 (SSL)
+
+// call the listen() method to start listening to http requests
+server.listen(
+  port, host, () => {
+    console.log(`Server is running on http://${host}:${port}`);
+    // console.log("Server is running on http://" + host + ":" + port);
+  }
+);
+
+// non-arrow function syntax of same code as lines 53-58 above
+/*
+server.listen(port, host, function() {
+  console.log(`Server is running on http://${host}:${port}`);
+});
+*/
